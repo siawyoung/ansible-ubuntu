@@ -37,15 +37,15 @@ Specify the codename of your Ubuntu release. This will be required for the scrip
 
 #### `deploy_user`
 
-Default: deploy
+Default: `deploy`
 
 Can be changed: yes, recommended
 
-Specify the login name of your deploy user.
+Specify the username of your deploy user.
 
 #### `key`
 
-Default: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
+Default: `"{{ lookup('file', '~/.ssh/id_rsa.pub') }}"`
 
 Can be changed: yes, recommended
 
