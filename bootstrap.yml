@@ -2,21 +2,16 @@
 - hosts: all
   vars:
   - ubuntu_release: utopic
-  - deploy_user: user
+  - deploy_user: deploy
   - key: "{{ lookup('file', '~/.ssh/id_rsa.pub') }}"
-  # run on Ubuntu 
-  # python -c 'import crypt; print crypt.crypt("YOUR_PASSWORD", "$1$YOUR_SALT$")'
-  - root_password: $1$YOUR_SALT$h4jh45jh2k34jh52
-  - deploy_password: $1$YOUR_SALT$5m6hj3456jh2j45
-  - install_packages: [mosh,vim,fail2ban,fish]
+  - root_password: $6$YOURSALT$YOURHASH
+  - deploy_password: $6$YOURSALT$YOURHASH
+  - install_packages: [vim,fail2ban]
+  - new_ssh_port: 22
   - allowed_ports:
       ssh:
-        port: 22
+        port: "{{ new_ssh_port }}"
         protocol: tcp
-      https:
-        port: 443
-        protocol: tcp
-  
 
 
   tasks:
@@ -24,10 +19,6 @@
     user:
       name=root 
       password={{ root_password }}
-
-  - name: Add fish to the apt repository
-    apt_repository:
-      repo='ppa:fish-shell/release-2'
 
   - name: Update APT package cache
     apt:
@@ -37,7 +28,7 @@
     apt:
       upgrade=safe
 
-  - name: Install mosh, vim, fail2ban
+  - name: Install specified packages
     apt: pkg={{ item }} state=latest
     with_items: install_packages
  
@@ -91,9 +82,13 @@
   - name: Enable ufw
     shell: echo 'y' | ufw enable
 
-  - name: Change shell to fish
-    shell: chsh -s $(which fish) {{ deploy_user }}
- 
+  - name: Change SSH port
+    lineinfile:
+      dest=/etc/ssh/sshd_config
+      regexp="^Port 22"
+      line="Port {{ new_ssh_port }}"
+      state=present
+
   - name: Disallow root SSH access
     lineinfile:
       dest=/etc/ssh/sshd_config
