@@ -66,11 +66,10 @@ Ubuntu's crypt function allows us to specify which encryption algorithm to use. 
 On Mac OS X, its crypt function only supports DES, which is insecure, so download the passlib library from pip or easy_install:
 
     pip install passlib
-    easy_insatll passlib
 
 Then, run the following Python script in Terminal. Using Python's `getpass()` function, it will prompt you for the password you want to set, then generate a SHA-512 hash using a randomly-generated salt, with 5000 rounds. 5000 rounds was chosen specifically to match with Linux's `crypt()` implementation, which appears to use 5000 rounds as a default.
 
-    echo "from passlib.hash import sha512_crypt; import getpass; print (sha512_crypt.encrypt(getpass.getpass(), rounds=5000))" | python3 -
+    echo "from passlib.hash import sha512_crypt; import getpass; print (sha512_crypt.encrypt(getpass.getpass(), rounds=5000))" | python -
 
 The script should print out something that resembles the following:
 
